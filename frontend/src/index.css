@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* ::-webkit-scrollbar {
+    width: 0.4rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bababa;
+    border: 1px solid rgba(75, 75, 75, 0.7);
+    border-radius: 4px;
+} */
+
+
+/* Loader */
+
+@keyframes custom-bounce1 {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+        /* Height of the first ball's bounce */
+    }
+}
+
+@keyframes custom-bounce2 {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-30px);
+        /* Height of the second ball's bounce */
+    }
+}
+
+@keyframes custom-bounce3 {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-40px);
+        /* Height of the third ball's bounce */
+    }
+}
+
+.animate-custom-bounce1 {
+    animation: custom-bounce1 0.8s infinite ease-in-out;
+}
+
+.animate-custom-bounce2 {
+    animation: custom-bounce2 0.8s infinite ease-in-out;
+    animation-delay: 0.2s;
+    /* Delay for the second ball */
+}
+
+.animate-custom-bounce3 {
+    animation: custom-bounce3 0.8s infinite ease-in-out;
+    animation-delay: 0.4s;
+
+}
+
+
+/* Another Loader */
+
+@keyframes progress {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.animate-progress {
+    animation: progress 1.7s infinite;
+}
+
+
+/* Normal CSS */
+
+html {
+    scroll-behavior: smooth;
+}

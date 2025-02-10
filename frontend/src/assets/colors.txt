@@ -1,0 +1,11 @@
+Color Set 1:
+    Primary - #494949
+    Secondary - #7C7A7A
+    Accent - #000000
+    Text - #FFFFFF / #000000
+
+Color Set 2:
+    Primary - #FCF7F8
+    Secondary - #275DAD
+    Accent - #CED3DC
+    Text - #000000 / #FFFFFF
