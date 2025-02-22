@@ -1,35 +1,47 @@
-import React, { useEffect } from 'react';
-import { useNavigate,  BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-// import Navbar from './components/Navbar';
-import "./index.css"
-import Login from './pages/Login';
+import React, { useEffect, lazy } from 'react';
+import { useNavigate, Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import PrivateRoute from './routes/PrivateRoute';
+import PublicRoute from './routes/PublicRoute';
+import "./index.css";
+
+const Login = lazy(() => import('./pages/Login'));
+const Home = lazy(() => import('./pages/Home'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 const App = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation(); // To get the current route
 
-    // useEffect(() => {
-    //     const queryParams = new URLSearchParams(window.location.search);
-    //     const token = queryParams.get('token');
+    useEffect(() => {
+        const authToken = localStorage.getItem('authToken');
 
-    //     if (token) {
-    //         localStorage.setItem('authToken', token); // Save token for future requests
-    //         navigate('/');
-    //     }
-    // }, [navigate]); 
+        if (!authToken && !['/login', '/forgot-password', '/reset-password'].includes(location.pathname)) {
+            navigate('/login');
+        } else if (authToken && ['/login', '/forgot-password', '/reset-password'].includes(location.pathname)) {
+            navigate('/home');
+        }
+    }, [location.pathname, navigate]);
+
 
     return (
         <>
+            <Navbar />
 
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Login/>}/>
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password/:token" element={<ResetPassword />} />
-                </Routes>
-            </Router>
-            {/* <Navbar/> */}
+                    <Routes element={<PublicRoute />}>
+
+                        <Route path="/" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        
+                    </Routes>
+
+                    {/* Private Routes */}
+                    <Routes element={<PrivateRoute />}>
+                        <Route path="/home" element={<Home />} />
+                    </Routes>
         </>
     );
 };

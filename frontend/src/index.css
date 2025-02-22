@@ -77,20 +77,24 @@
 
 
 /* Another Loader */
+.loader-bar {
+    width: 500px;
+    height: 2px;
+    background: linear-gradient(90deg, #007bff, #f3f3f3);
+    background-size: 200% 100%;
+    border-radius: 100%;
+    animation: slide 1s infinite;
+}
 
-@keyframes progress {
+@keyframes slide {
     0% {
-        transform: translateX(-100%);
+        background-position: 0% 0%;
     }
-
     100% {
-        transform: translateX(100%);
+        background-position: 200% 0%;
     }
 }
 
-.animate-progress {
-    animation: progress 1.7s infinite;
-}
 
 
 /* Normal CSS */

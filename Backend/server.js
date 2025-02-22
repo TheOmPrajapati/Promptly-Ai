@@ -3,16 +3,15 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const connectDB = require('./config/db');
 const session = require('express-session');
-const userRoutes = require('./routes/userRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const authRoutes = require('./routes/authRoutes');
-const cors = require('cors'); 
+const userRoutes = require('./Routes/userRoutes');
+const chatRoutes = require('./Routes/chatRoutes');
+const authRoutes = require('./Routes/authRoutes');
+const cors = require('cors');
 require('dotenv').config();
 connectDB();
 require('./Config/googleAuth');
-
 const app = express();
-app.use(cors()); 
+
 
 // Session Middleware
 app.use(
@@ -24,10 +23,20 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000', // Replace with your frontend's URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Allows cookies or headers to be passed with the request
+}));
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`); // Logs incoming request method and URL
+    next();
+});
 
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/chats', chatRoutes);
+app.use('/api/chats/', chatRoutes);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(authRoutes);
@@ -43,16 +52,10 @@ app.get(
     }
 );
 
-// Callback route
-app.get(
-    '/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }), // Handle failure
-    (req, res) => {
-        // Successful authentication
-        // Redirect to frontend or send a token
-        res.redirect('http://localhost:3000'); // Replace with your frontend's dashboard route
-    }
-);
+app.get('/test', (req, res) => {
+    res.status(200).send('Server is running!');
+});
+
 
 app.get('/', (req, res) => {
     res.send('Server is up and running!');

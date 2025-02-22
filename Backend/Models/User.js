@@ -5,8 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String }, // Not required for Google OAuth users
     googleId: { type: String }, // Add a field for Google ID
-    resetToken: { type: String }, // Token for password reset
-    resetTokenExpire: { type: Date }, // Expiry time for the token
+    resetOTP: { type: Number }, // Store the OTP
+    resetOTPExpire: { type: Date }, // Expiration time for the OTP
 });
 
 // Check if the model already exists to avoid OverwriteModelError

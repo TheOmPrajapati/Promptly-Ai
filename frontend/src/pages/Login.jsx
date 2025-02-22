@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import logo from '../assets/LOGO.png';
 import GoogleLoginButton from './../components/GoogleLoginButton';
-import { ToastContainer, toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import login from '../assets/Login.png';
 
 export default function Login() {
     const [isLogin, setIsLogin] = useState(true); // Toggles between Login and Signup forms
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate(); // Hook for navigation
 
     // Toggle Forms with Animation
     const toggleForm = () => setIsLogin(!isLogin);
@@ -37,28 +38,19 @@ export default function Login() {
                 });
                 toast.success('Login Successful', {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                    });
-                console.log(response.data); // Handle token or user data
+                    duration: 1500,
+                });
+                localStorage.setItem('authToken', response.data.token);
+                setTimeout(() => {
+                    navigate('/home');
+                }, 1700);
             } else {
                 // Signup API call
                 if (formData.password !== formData.confirmPassword) {
                     toast.warn('Passwords do not match', {
                         position: "top-right",
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: false,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        });
+                        duration: 1500,
+                    });
                     return;
                 }
                 const response = await axios.post('http://localhost:5000/api/users/register', {
@@ -68,68 +60,37 @@ export default function Login() {
                 });
                 toast.success('Signup Successful', {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                    });
-                console.log(response.data);
+                    duration: 1700,
+                });
+                localStorage.setItem('authToken', response.data.token);
+                setTimeout(() => {
+                    navigate('/home');
+                }, 1700);
             }
         } catch (error) {
             toast.error('An error occurred. Please try again.', {
                 position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                });
+                duration: 1500,
+            });
             console.error(error);
         }
     };
 
-    // Forgot Password Handler
-    const handleForgotPassword = async () => {
-        if (!formData.email) {
-            toast.warn('Please enter your email to reset your password.', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                });
-            return;
-        }
-    };
-
     return (
-        <div className="w-full flex items-center justify-center h-screen font-sans">
+        <div className="w-full relative md:top-[60px] top-32 flex items-center justify-center h-full bg-white font-sans">
             {/* Left Side with Logo and Info */}
-            <div className="hidden md:flex flex-col items-center justify-center p-6 border h-screen rounded-xl w-1/2 bg-white">
-                <img src={logo} alt="LOGO" className="w-[30%]" />
-                <div className="flex flex-col items-center justify-center">
-                    <h1 className="text-3xl font-extrabold mb-1">Promptly AI</h1>
-                    <h3 className="text-xl font-semibold">Talk Smart, Think Smarter.</h3>
-                    <p className="p-3 text-center text-lg tracking-wide">
-                        An AI-powered platform delivering smarter, faster, and secure conversational experiences for all your needs.
-                    </p>
+            <div className="hidden md:flex flex-col items-center justify-center h-full rounded-r-3xl p-6 w-full border bg-gray-100">
+                <div className="hidden lg:flex flex-col items-center justify-center">
+                    <img src={login} alt="Login" />
                 </div>
             </div>
 
             {/* Right Side with Forms */}
             <div
-                className="w-full md:w-1/2 flex items-center justify-center h-screen bg-white p-6 rounded-md shadow-lg">
+                className="w-full flex items-center justify-center h-full bg-white p-6">
 
                 <form className="flex flex-col w-[80%]" onSubmit={handleSubmit}>
-                    <h1 className="text-4xl text-center font-extrabold mb-6 py-2">{isLogin ? 'Login' : 'Signup'}</h1>
+                    <h1 className="text-4xl font-bold mb-6 py-2">{isLogin ? 'Login' : 'Signup'}</h1>
                     {!isLogin && (
                         <>
                             <label htmlFor="name" className="mt-2">Name</label>
@@ -181,7 +142,6 @@ export default function Login() {
                     {/* Forgot Password Section */}
                     {isLogin && (
                         <Link to={'/forgot-password'}
-                            onClick={handleForgotPassword}
                             className="text-sm text-blue-500 cursor-pointer hover:underline mt-1"
                         >
                             Forgot Password?
@@ -193,7 +153,7 @@ export default function Login() {
                         <>
                             <label htmlFor="confirmPassword" className="mt-2">Confirm Password</label>
                             <input
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 name="confirmPassword"
                                 id="confirmPassword"
                                 className="border-2 outline-none text-gray-600 p-2 rounded-md my-2"
@@ -211,7 +171,7 @@ export default function Login() {
                         className="text-gray-700 hover:text-white font-semibold border-2 p-2 rounded-md hover:bg-gray-700 transition duration-200 mt-4">
                         {isLogin ? 'Login' : 'Signup'}
                     </button>
-                    <ToastContainer />
+                    <Toaster/>
 
                     {/* Toggle Button */}
                     <p className="mt-4 text-center text-gray-600 flex items-center">
